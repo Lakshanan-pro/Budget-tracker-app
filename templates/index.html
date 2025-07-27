@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Budget Tracker</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Budget Tracker</h1>
+            <p>Track your income and expenses in a smarter way</p>
+        </header>
+
+        <section class="card">
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type">
+                        <option value="Income">Income</option>
+                        <option value="Expense">Expense</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" placeholder="₹0" required />
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" placeholder="e.g., Food, Salary" />
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="Optional note..." />
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required />
+                </div>
+                <button type="submit" class="btn-primary">Add Transaction</button>
+            </form>
+        </section>
+
+        <section class="summary-section">
+            <div class="summary-card income">
+                <p>Income</p>
+                <h2>₹<span id="totalIncome">0</span></h2>
+            </div>
+            <div class="summary-card expense">
+                <p>Expense</p>
+                <h2>₹<span id="totalExpense">0</span></h2>
+            </div>
+            <div class="summary-card balance">
+                <p>Balance</p>
+                <h2>₹<span id="balance">0</span></h2>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="form-group">
+                <label for="filterDate">Filter by Date</label>
+                <input type="date" id="filterDate" />
+                <button onclick="fetchTransactions()" class="btn-secondary">Apply</button>
+            </div>
+        </section>
+
+        <section class="card table-section">
+            <h2>Transaction History</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionList"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

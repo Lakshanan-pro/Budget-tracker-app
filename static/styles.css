@@ -1,0 +1,157 @@
+/* Background Gradient Animation */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(-45deg, #8e44ad, #3498db, #2ecc71, #e74c3c);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Glass Card */
+.container {
+    width: 90%;
+    max-width: 500px;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    margin: 20px 0;
+    animation: fadeInUp 1s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Headings */
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+form input, form select, form button {
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+form input, form select {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+form input::placeholder {
+    color: #eee;
+}
+
+form button {
+    background-color: #00c9a7;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+form button:hover {
+    background-color: #00b894;
+    transform: scale(1.03);
+}
+
+/* Summary Section */
+.summary {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.summary p {
+    margin: 6px 0;
+}
+
+/* Date Filter */
+#filterDate {
+    width: 100%;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+/* Table */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    color: #fff;
+}
+
+th {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+button.delete-btn {
+    background-color: #e74c3c;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    table, th, td {
+        font-size: 0.9rem;
+    }
+
+    form input, form select, form button {
+        font-size: 0.95rem;
+    }
+}

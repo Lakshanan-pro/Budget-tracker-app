@@ -1,3 +1,5 @@
-Flask==2.3.2
-flask-cors
-
+Flask
+Flask_SQLAlchemy
+Flask_Cors
+psycopg2-binary
+Werkzeug

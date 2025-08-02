@@ -9,10 +9,13 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>💰 Budget Tracker</h1>
-            <p>Track your income and expenses in a smarter way</p>
-        </header>
+        <!-- Add this inside <header> tag -->
+<header>
+    <h1>💰 Budget Tracker</h1>
+    <p>Track your income and expenses in a smarter way</p>
+    <button onclick="window.location.href='/logout'" class="btn-secondary">Logout</button>
+</header>
+
 
         <section class="card">
             <form id="transactionForm">
@@ -87,5 +90,6 @@
     </div>
 
     <script src="/static/script.js"></script>
+
 </body>
 </html>

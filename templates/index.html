@@ -3,93 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Budget Tracker</title>
+    <title>Personal Expense Tracker</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Add this inside <header> tag -->
-<header>
-    <h1>💰 Budget Tracker</h1>
-    <p>Track your income and expenses in a smarter way</p>
-    <button onclick="window.location.href='/logout'" class="btn-secondary">Logout</button>
-</header>
+<div class="container">
+    <header class="hero">
+        <div>
+            <p class="eyebrow">PERSONAL FINANCE</p>
+            <h1>Expense Tracker</h1>
+            <p>Record, manage and understand your everyday spending.</p>
+        </div>
+        <a href="/logout" class="btn secondary">Logout</a>
+    </header>
 
+    <section class="summary-grid">
+        <div class="summary-card"><span>Total Spending</span><strong id="totalExpense">₹0.00</strong></div>
+        <div class="summary-card"><span>Number of Expenses</span><strong id="expenseCount">0</strong></div>
+        <div class="summary-card"><span>Top Category</span><strong id="topCategory">—</strong></div>
+    </section>
 
-        <section class="card">
-            <form id="transactionForm">
-                <div class="form-group">
-                    <label for="type">Type</label>
-                    <select id="type">
-                        <option value="Income">Income</option>
-                        <option value="Expense">Expense</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount" placeholder="₹0" required />
-                </div>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <input type="text" id="category" placeholder="e.g., Food, Salary" />
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" placeholder="Optional note..." />
-                </div>
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" required />
-                </div>
-                <button type="submit" class="btn-primary">Add Transaction</button>
-            </form>
-        </section>
-
-        <section class="summary-section">
-            <div class="summary-card income">
-                <p>Income</p>
-                <h2>₹<span id="totalIncome">0</span></h2>
+    <section class="card">
+        <div class="section-heading">
+            <div><h2 id="formTitle">Add Expense</h2><p>Enter the details of your expense.</p></div>
+        </div>
+        <form id="expenseForm" class="expense-form">
+            <input type="hidden" id="expenseId">
+            <label>Amount (₹)<input type="number" id="amount" min="0.01" step="0.01" placeholder="500" required></label>
+            <label>Category
+                <select id="category" required>
+                    <option value="">Select category</option>
+                    <option>Food</option><option>Travel</option><option>Shopping</option>
+                    <option>Education</option><option>Entertainment</option><option>Bills</option><option>Other</option>
+                </select>
+            </label>
+            <label>Date<input type="date" id="date" required></label>
+            <label>Description<input type="text" id="description" maxlength="120" placeholder="Lunch with friends"></label>
+            <div class="form-actions">
+                <button type="submit" class="btn primary" id="submitBtn">Add Expense</button>
+                <button type="button" class="btn secondary hidden" id="cancelBtn">Cancel Edit</button>
             </div>
-            <div class="summary-card expense">
-                <p>Expense</p>
-                <h2>₹<span id="totalExpense">0</span></h2>
-            </div>
-            <div class="summary-card balance">
-                <p>Balance</p>
-                <h2>₹<span id="balance">0</span></h2>
-            </div>
-        </section>
+        </form>
+    </section>
 
-        <section class="card">
-            <div class="form-group">
-                <label for="filterDate">Filter by Date</label>
-                <input type="date" id="filterDate" />
-                <button onclick="fetchTransactions()" class="btn-secondary">Apply</button>
-            </div>
-        </section>
+    <section class="card">
+        <div class="section-heading inline">
+            <div><h2>Expense History</h2><p>Your recorded expenses appear here.</p></div>
+            <input type="date" id="filterDate" aria-label="Filter by date">
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th>Actions</th></tr></thead>
+                <tbody id="expenseList"><tr><td colspan="5" class="empty">No expenses yet.</td></tr></tbody>
+            </table>
+        </div>
+    </section>
 
-        <section class="card table-section">
-            <h2>Transaction History</h2>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionList"></tbody>
-                </table>
-            </div>
-        </section>
-    </div>
-
-    <script src="/static/script.js"></script>
-
+    <footer><span>Personal Expense Tracker</span><a href="/health">Service Health</a></footer>
+</div>
+<script src="/static/script.js"></script>
 </body>
 </html>

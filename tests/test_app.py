@@ -1,4 +1,9 @@
+import sys
+from pathlib import Path
+
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app import app, init_db
 
@@ -37,15 +42,9 @@ def test_signup_and_login(client):
 
 def test_add_and_list_expense(client):
     register_and_login(client)
-    response = client.post("/expenses", json={
-        "amount": 250,
-        "category": "Food",
-        "description": "Lunch",
-        "date": "2026-09-14",
-    })
+    response = client.post("/expenses", json={"amount": 250, "category": "Food", "description": "Lunch", "date": "2026-09-14"})
     assert response.status_code == 201
     expense_id = response.get_json()["id"]
-
     response = client.get("/expenses")
     assert response.status_code == 200
     expenses = response.get_json()
@@ -57,32 +56,16 @@ def test_add_and_list_expense(client):
 
 def test_update_expense(client):
     register_and_login(client)
-    response = client.post("/expenses", json={
-        "amount": 100,
-        "category": "Food",
-        "description": "Tea",
-        "date": "2026-09-14",
-    })
+    response = client.post("/expenses", json={"amount": 100, "category": "Food", "description": "Tea", "date": "2026-09-14"})
     expense_id = response.get_json()["id"]
-
-    response = client.put(f"/expenses/{expense_id}", json={
-        "amount": 180,
-        "category": "Travel",
-        "description": "Bus",
-        "date": "2026-09-13",
-    })
+    response = client.put(f"/expenses/{expense_id}", json={"amount": 180, "category": "Travel", "description": "Bus", "date": "2026-09-13"})
     assert response.status_code == 200
     assert client.get("/expenses").get_json()[0]["amount"] == 180
 
 
 def test_delete_expense(client):
     register_and_login(client)
-    response = client.post("/expenses", json={
-        "amount": 100,
-        "category": "Other",
-        "description": "Test",
-        "date": "2026-09-14",
-    })
+    response = client.post("/expenses", json={"amount": 100, "category": "Other", "description": "Test", "date": "2026-09-14"})
     expense_id = response.get_json()["id"]
     response = client.delete(f"/expenses/{expense_id}")
     assert response.status_code == 200
@@ -91,11 +74,7 @@ def test_delete_expense(client):
 
 def test_invalid_expense_is_rejected(client):
     register_and_login(client)
-    response = client.post("/expenses", json={
-        "amount": -10,
-        "category": "Food",
-        "date": "2026-09-14",
-    })
+    response = client.post("/expenses", json={"amount": -10, "category": "Food", "date": "2026-09-14"})
     assert response.status_code == 400
 
 

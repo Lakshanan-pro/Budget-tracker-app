@@ -1,64 +1,100 @@
-document.getElementById('transactionForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = {
-        type: document.getElementById('type').value,
-        amount: parseFloat(document.getElementById('amount').value),
+const form = document.getElementById('expenseForm');
+const dateInput = document.getElementById('date');
+const filterDate = document.getElementById('filterDate');
+const expenseId = document.getElementById('expenseId');
+
+if (!dateInput.value) dateInput.value = new Date().toISOString().slice(0, 10);
+
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const id = expenseId.value;
+    const payload = {
+        amount: Number(document.getElementById('amount').value),
         category: document.getElementById('category').value,
-        description: document.getElementById('description').value,
-        date: document.getElementById('date').value,
+        date: dateInput.value,
+        description: document.getElementById('description').value.trim()
     };
 
-    const res = await fetch('/transactions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+    const response = await fetch(id ? `/expenses/${id}` : '/expenses', {
+        method: id ? 'PUT' : 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
     });
+    const data = await response.json();
+    if (!response.ok) return alert(data.message || 'Unable to save expense');
 
-    if (res.ok) {
-        fetchTransactions();
-        document.getElementById('transactionForm').reset();
-    } else {
-        alert("Failed to add transaction");
-    }
+    resetForm();
+    await loadExpenses();
 });
 
-async function fetchTransactions() {
-    const res = await fetch('/transactions');
-    const transactions = await res.json();
-    const list = document.getElementById('transactionList');
-    list.innerHTML = '';
+document.getElementById('cancelBtn').addEventListener('click', resetForm);
+filterDate.addEventListener('change', loadExpenses);
 
-    let income = 0, expense = 0;
+async function loadExpenses() {
+    const response = await fetch('/expenses');
+    if (response.status === 401) return;
+    const expenses = await response.json();
+    const selectedDate = filterDate.value;
+    const visible = selectedDate ? expenses.filter(item => item.date === selectedDate) : expenses;
+    const list = document.getElementById('expenseList');
 
-    transactions.forEach(tx => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${tx.type}</td>
-            <td>₹${tx.amount.toFixed(2)}</td>
-            <td>${tx.category}</td>
-            <td>${tx.description}</td>
-            <td>${tx.date}</td>
-            <td><button onclick="deleteTransaction(${tx.id})">Delete</button></td>
-        `;
-        list.appendChild(row);
-
-        if (tx.type === 'Income') income += tx.amount;
-        else expense += tx.amount;
-    });
-
-    document.getElementById('totalIncome').textContent = income.toFixed(2);
-    document.getElementById('totalExpense').textContent = expense.toFixed(2);
-    document.getElementById('balance').textContent = (income - expense).toFixed(2);
+    if (!visible.length) {
+        list.innerHTML = '<tr><td colspan="5" class="empty">No expenses found.</td></tr>';
+    } else {
+        list.innerHTML = visible.map(item => `
+            <tr>
+                <td>${escapeHtml(item.date)}</td>
+                <td><span class="badge">${escapeHtml(item.category)}</span></td>
+                <td>${escapeHtml(item.description || '—')}</td>
+                <td class="amount">₹${Number(item.amount).toFixed(2)}</td>
+                <td class="actions">
+                    <button class="small edit" onclick='startEdit(${JSON.stringify(item)})'>Edit</button>
+                    <button class="small delete" onclick="deleteExpense(${item.id})">Delete</button>
+                </td>
+            </tr>`).join('');
+    }
+    updateSummary(expenses);
 }
 
-async function deleteTransaction(id) {
-    const res = await fetch('/transactions', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-    });
-
-    if (res.ok) fetchTransactions();
+function updateSummary(expenses) {
+    const total = expenses.reduce((sum, item) => sum + Number(item.amount), 0);
+    const counts = {};
+    expenses.forEach(item => counts[item.category] = (counts[item.category] || 0) + Number(item.amount));
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById('totalExpense').textContent = `₹${total.toFixed(2)}`;
+    document.getElementById('expenseCount').textContent = expenses.length;
+    document.getElementById('topCategory').textContent = top ? top[0] : '—';
 }
 
-window.onload = fetchTransactions;
+window.startEdit = function(item) {
+    expenseId.value = item.id;
+    document.getElementById('amount').value = item.amount;
+    document.getElementById('category').value = item.category;
+    dateInput.value = item.date;
+    document.getElementById('description').value = item.description || '';
+    document.getElementById('formTitle').textContent = 'Edit Expense';
+    document.getElementById('submitBtn').textContent = 'Update Expense';
+    document.getElementById('cancelBtn').classList.remove('hidden');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+};
+
+window.deleteExpense = async function(id) {
+    if (!confirm('Delete this expense?')) return;
+    const response = await fetch(`/expenses/${id}`, {method: 'DELETE'});
+    if (response.ok) await loadExpenses();
+};
+
+function resetForm() {
+    form.reset();
+    expenseId.value = '';
+    dateInput.value = new Date().toISOString().slice(0, 10);
+    document.getElementById('formTitle').textContent = 'Add Expense';
+    document.getElementById('submitBtn').textContent = 'Add Expense';
+    document.getElementById('cancelBtn').classList.add('hidden');
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+}
+
+loadExpenses();

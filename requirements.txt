@@ -1,5 +1,3 @@
-Flask
-Flask_SQLAlchemy
-Flask_Cors
-psycopg2-binary
-Werkzeug
+Flask==3.1.2
+Werkzeug==3.1.3
+pytest==8.4.2
